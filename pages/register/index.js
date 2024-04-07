@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Button, Center, Container, Fieldset, Group, PasswordInput, TextInput } from "@mantine/core";
 
@@ -12,6 +12,13 @@ export default function Register() {
 
   const router = useRouter();
 
+  useEffect(() => {
+    const authToken = localStorage.getItem('auth-token')
+    if (authToken) {
+      router.push('/dashboard')
+    }
+  }, [])
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -23,7 +30,7 @@ export default function Register() {
 
     try {
       const response = await fetch(
-        "http://localhost:3000/api/user/register/",
+        "https://split-right-api.onrender.com/api/auth/register",
         requestOptions
       );
       const data = await response.json();

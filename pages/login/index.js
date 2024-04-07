@@ -1,59 +1,81 @@
+import {
+  Button,
+  Container,
+  Fieldset,
+  Group,
+  PasswordInput,
+  TextInput,
+} from "@mantine/core";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // console.log(email, password);
 
-  console.log(username, email, password);
+  const router = useRouter();
+
+  useEffect(() => {
+    const authToken = localStorage.getItem('auth-token')
+    if (authToken) {
+      router.push('/dashboard')
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'applications/json' },
-      body: JSON.stringify({ username, password })
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     };
 
     try {
-      const response = await fetch('http://localhost:3000/api/user/login', requestOptions);
+      const response = await fetch(
+        "https://split-right-api.onrender.com/api/auth/login",
+        requestOptions
+      );
       const data = await response.json();
 
-      if (response.ok) {
-        console.log('User logged in successfully: ', data);
+      if (!response.ok) {
+        console.error("Login failed", data.error);
       } else {
-        console.error('Login failed', data.error);
+        console.log("User logged in successfully: ", data);
+        localStorage.setItem('auth-token', data.token)
+        router.push('/dashboard')
       }
-
     } catch (error) {
-      console.log('Error logging in: ', error);
+      console.log("Error logging in: ", error);
     }
   };
 
   return (
     <>
-      <Link href="/">Home</Link>
-      <div>Login</div>
+      <Link href="/">Yofin</Link>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>name</label>
-          <input type="name" onChange={(e) => setUsername(e.target.value)} />
-        </div>
-        <div>
-          <label>email</label>
-          <input type="email" onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <label>password</label>
-          <input
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <button type="submit">Log in</button>
-        <Link href="/register">Create a new account.</Link>
+        <Container size="xs">
+          <Fieldset legend="Login">
+            <TextInput
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+              label="Email"
+              placeholder="Your email"
+            />
+            <PasswordInput
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+              label="password"
+              placeholder="Choose a password"
+            />
+            <Group justify="flex-end" mt="md">
+              <Button type="submit">Submit</Button>
+            </Group>
+            <Link href="/register">Create a new account.</Link>
+          </Fieldset>
+        </Container>
       </form>
     </>
   );
