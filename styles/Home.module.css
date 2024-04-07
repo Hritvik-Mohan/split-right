@@ -1,0 +1,24 @@
+.landing_page_heading {
+    font-size: 4rem;
+    font-weight: 600;
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.auth_links {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.landing_page_description {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+}
